@@ -21,7 +21,7 @@ public class WerewolfUserService implements UserDetailsService, IUserService {
 	@Override
 	public void createUser(String firstname, String lastname, String username,
 			String password, String role) throws DuplicateUserException{
-		Collection<GrantedAuthority> authorities = new ArrayList<>();
+		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority(role));
 		MyUser u = new MyUser(firstname, lastname, username, password, "user.png", authorities, 0);
 		userDao.createUser(u);
