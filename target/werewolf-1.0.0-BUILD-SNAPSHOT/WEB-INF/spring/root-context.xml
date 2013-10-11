@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		<context:annotation-config />
+		<mvc:annotation-driven />
+		
+		<task:annotation-driven executor="myExecutor" scheduler="myScheduler"/>
+		<task:executor id="myExecutor" pool-size="5"/>
+		<task:scheduler id="myScheduler" pool-size="10"/>
+		
+	<!-- <bean id="mongo" class="com.mongodb.MongoClient" /> -->
+	
+	<bean id="userDao" class="edu.wm.werewolf.DAO.MongoUserDAO" />
+	<bean id="playerDao" class="edu.wm.werewolf.DAO.MongoPlayerDAO" />
+	<bean id="gameService" class = "edu.wm.werewolf.service.GameService" />
+	<bean id="userService" class = "edu.wm.werewolf.service.WerewolfUserService" />
+	<bean id="werewolfAuthenticationProvider" class = "edu.wm.werewolf.component.WerewolfAuthenticationProvider"/>
+	<bean id="gameDao" class="edu.wm.werewolf.DAO.MongoGameDAO" />
+	
+		<!-- Factory bean that creates the Mongo instance -->
+    <bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
+        <property name="host" value="localhost" />
+    </bean>
+     
+    <!-- MongoTemplate for connecting and querying the documents in the database -->
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongo" ref="mongo" />
+        <constructor-arg name="databaseName" value="werewolf" />
+    </bean>
+ 
+    <!-- Use this post processor to translate any MongoExceptions thrown in @Repository annotated classes -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+</beans>
