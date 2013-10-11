@@ -181,6 +181,8 @@
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <executable>${env.JAVA_HOME_7}/bin/javac</executable>
+        			<fork>true</fork>
                 </configuration>
             </plugin>
             <plugin>
