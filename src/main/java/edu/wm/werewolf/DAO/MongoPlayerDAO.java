@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.Point;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -24,6 +26,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 
+import edu.wm.werewolf.config.SpringMongoConfig;
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.Game;
 import edu.wm.werewolf.domain.Kill;
@@ -34,8 +37,9 @@ import edu.wm.werewolf.exceptions.NoPlayerFoundException;
 
 public class MongoPlayerDAO implements IPlayerDAO {
 
-	@Autowired private MongoTemplate mongoTemplate;
-	
+	//@Autowired private MongoTemplate mongoTemplate;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+	MongoTemplate mongoTemplate = ctx.getBean(MongoTemplate.class);
 	@Override
 	/**
 	 * Add player into database

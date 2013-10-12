@@ -25,18 +25,4 @@
 	<bean id="userService" class = "edu.wm.werewolf.service.WerewolfUserService" />
 	<bean id="werewolfAuthenticationProvider" class = "edu.wm.werewolf.component.WerewolfAuthenticationProvider"/>
 	<bean id="gameDao" class="edu.wm.werewolf.DAO.MongoGameDAO" />
-	
-		<!-- Factory bean that creates the Mongo instance -->
-    <bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
-        <property name="host" value="localhost" />
-    </bean>
-     
-    <!-- MongoTemplate for connecting and querying the documents in the database -->
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongo" ref="mongo" />
-        <constructor-arg name="databaseName" value="werewolf" />
-    </bean>
- 
-    <!-- Use this post processor to translate any MongoExceptions thrown in @Repository annotated classes -->
-    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 </beans>

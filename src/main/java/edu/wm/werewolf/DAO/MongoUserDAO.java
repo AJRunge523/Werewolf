@@ -41,7 +41,9 @@ import edu.wm.werewolf.exceptions.DuplicateUserException;
 public class MongoUserDAO implements IUserDAO {
 
 //@Autowired private MongoClient mongo;
-@Autowired private MongoTemplate mongoTemplate;
+//@Autowired private MongoTemplate mongoTemplate;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+	MongoTemplate mongoTemplate = ctx.getBean(MongoTemplate.class);
 	@Override
 	public void createUser(MyUser user) throws DuplicateUserException {
 		if(!mongoTemplate.collectionExists(MyUser.class))

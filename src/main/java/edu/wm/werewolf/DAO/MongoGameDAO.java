@@ -7,15 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 
+import edu.wm.werewolf.config.SpringMongoConfig;
 import edu.wm.werewolf.domain.Game;
 import edu.wm.werewolf.domain.Player;
 
 public class MongoGameDAO implements IGameDAO {
 
-@Autowired private MongoTemplate mongoTemplate;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+	MongoTemplate mongoTemplate = ctx.getBean(MongoTemplate.class);
 	@Override
 	public boolean isNight() {
 
