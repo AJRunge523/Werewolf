@@ -10,6 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Document(collection = "users")
 public class MyUser extends User{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7074331855644684967L;
 	@Id
 	private String id;
 	private String firstName;
