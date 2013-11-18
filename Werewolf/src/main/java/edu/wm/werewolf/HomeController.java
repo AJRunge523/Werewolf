@@ -77,14 +77,7 @@ public class HomeController {
 	public @ResponseBody JsonResponse switchTimes()
 	{
 		logger.info("attempting to switch from night to day");
-		String result = gameService.dayNightSwitch();
-		if(result.equals("success"))
-		{
-			return new JsonResponse("success", null);
-		}
-		else
-		{
-			return new JsonResponse("failure", result);
-		}
+		gameService.dayNightSwitch();
+		return new JsonResponse("success", null);
 	}
 }
