@@ -41,12 +41,11 @@ public class PlayerController {
 	@Autowired private GameService gameService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody String getAll()
+	public @ResponseBody JsonResponse getAll()
 	{
 		List<SimplePlayer> players = gameService.getAllAlive();
 		logger.info("Players: {}", players.toString());
-		//return new JsonResponse("success", players);
-		return "butts";
+		return new JsonResponse("success", players);
 	}
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public @ResponseBody JsonResponse getPlayerByID(@PathVariable String name, Principal principal)
