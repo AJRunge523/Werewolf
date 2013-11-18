@@ -41,71 +41,77 @@ public class PlayerController {
 	@Autowired private GameService gameService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody List<SimplePlayer> getAll()
+	public @ResponseBody JsonResponse getAll()
 	{
 		List<SimplePlayer> players = gameService.getAllAlive();
 		logger.info("Players: {}", players.toString());
-		return players;
+		return new JsonResponse("success", players);
 	}
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
-	public @ResponseBody Player getPlayerByID(@PathVariable String name, Principal principal)
+	public @ResponseBody JsonResponse getPlayerByID(@PathVariable String name, Principal principal)
 	{
 		try {
 			Player player = gameService.getPlayerByName(name);
 			logger.info("ID number received: {}", name);
-			return player;
+			return new JsonResponse("success", player);
 		} catch (NoPlayerFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.info("Id number received: {}", name);
-			return null;
+			return new JsonResponse("failure", e.getMessage());
 		}
 	}
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public @ResponseBody String takeActionOnPlayer(@PathVariable String id, @RequestBody Map<String, String> body, Principal principal) {
+	public @ResponseBody JsonResponse takeActionOnPlayer(@PathVariable String id, @RequestBody Map<String, String> body, Principal principal) {
 		
 	    logger.info("Body content: " + body.get("type"));
 	    if(body.get("type").equals("kill"))
 	    {
 	    	try{
-	    		return gameService.killPlayerByName(principal.getName(), id);
+	    		return new JsonResponse("success", gameService.killPlayerByName(principal.getName(), id));
 	    	}
 	    	catch(NoPlayerFoundException e) {
 	    		logger.info("ID number received: {}", id);
-	    		return "Failure: Player not found";
+	    		return new JsonResponse("failure", e.getMessage());
 	    	}
 	    }
 	    else if(body.get("type").equals("vote"))
 	    {
 	    	try{
-	    		return gameService.votePlayerByName(principal.getName(), id);
+	    		return new JsonResponse("success", gameService.votePlayerByName(principal.getName(), id));
 	    	}
 	    	catch(NoPlayerFoundException e) {
 	    		logger.info("ID number received: {}", id);
 	    		return null;
 	    	}
 	    }
-	    else return "invalid action type";
+	    else return new JsonResponse("failure", "invalid action type");
 	}
 	@RequestMapping(value = "/location", method = RequestMethod.POST)
 	public @ResponseBody JsonResponse setLocation(@RequestBody Map<String, Double> body, Principal principal)
 	{
-		JsonResponse response = new JsonResponse();
 		GPSLocation loc = new GPSLocation(body.get("lat"), body.get("lon"));
 		logger.info("Setting" + principal.getName() + "'s location to: " + loc);
 		gameService.updatePosition(principal.getName(), loc);
+		JsonResponse response = new JsonResponse("success", null);
 		return response;
 	}
 	@RequestMapping(value = "/nearbyPlayers", method = RequestMethod.POST)
-	public @ResponseBody List<Player> getNearbyPlayers(@RequestBody Map<String, Double> body, Principal principal)
+	public @ResponseBody JsonResponse getNearbyPlayers(@RequestBody Map<String, Double> body, Principal principal)
 	{
 		List<Player> players;
+		JsonResponse response;
 		GPSLocation location = new GPSLocation(body.get("lat"), body.get("lon"));
 		try {
 			if(!gameService.getPlayerByName(principal.getName()).isWerewolf())
-				return null;
+			{
+				response = new JsonResponse("failure", "Player is not a werewolf");
+				return response;
+			}
 		} catch (NoPlayerFoundException e1) {
 			e1.printStackTrace();
+			response = new JsonResponse("failure", e1.getMessage());
+			return response;
 		}
 		logger.info("Checking for players near to" + principal.getName() + "s location: " + location);
 		gameService.updatePosition(principal.getName(), location);
@@ -113,9 +119,11 @@ public class PlayerController {
 			players = gameService.getNearbyPlayers(principal.getName());
 		} catch (NoPlayerFoundException e) {
 			// TODO Auto-generated catch block
+			response = new JsonResponse("failure", e.getMessage());
 			e.printStackTrace();
-			return null;
+			return response;
 		}
-		return players;
+		response = new JsonResponse("success", players);
+		return response;
 	}
 }

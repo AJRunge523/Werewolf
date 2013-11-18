@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.DAO.IPlayerDAO;
+import edu.wm.werewolf.domain.JsonResponse;
 import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.exceptions.DuplicateUserException;
 import edu.wm.werewolf.service.GameService;
@@ -52,7 +53,7 @@ public class HomeController {
 		return "home";
 	}
 	@RequestMapping(value = "/newAccount", method = RequestMethod.POST)
-	public @ResponseBody String takeActionOnPlayer(@RequestBody Map<String, String> body) 
+	public @ResponseBody JsonResponse takeActionOnPlayer(@RequestBody Map<String, String> body) 
 	{
 		try {
 		userService.createUser(body.get("firstName"), body.get("lastName"), 
@@ -60,23 +61,31 @@ public class HomeController {
 		}
 		catch(DuplicateUserException e)
 		{
-			return e.getMessage();
+			return new JsonResponse("failure", e.getMessage());
 		}
-		return "success";
+		return new JsonResponse("success", null);
 	}
 	@RequestMapping(value = "/auth/restart", method = RequestMethod.POST)
-	public @ResponseBody String restartGame(@RequestBody Map<String, Integer> cycle)
+	public @ResponseBody JsonResponse restartGame(@RequestBody Map<String, Integer> cycle)
 	{
 		logger.info("asdjiojtoewjrsdlfkjldjsf");
 		
 		gameService.restartGame(cycle.get("time"));
-		return "success";
+		return new JsonResponse("success", null);
 	}
 	@RequestMapping(value = "/switch", method = RequestMethod.GET)
-	public @ResponseBody String switchTimes()
+	public @ResponseBody JsonResponse switchTimes()
 	{
 		logger.info("attempting to switch from night to day");
-		gameService.dayNightSwitch();
+		String result = gameService.dayNightSwitch();
+		if(result.equals("success"))
+		{
+			return new JsonResponse("success", null);
+		}
+		else
+		{
+			return new JsonResponse("failure", result)
+		}
 		return "success";
 	}
 }
