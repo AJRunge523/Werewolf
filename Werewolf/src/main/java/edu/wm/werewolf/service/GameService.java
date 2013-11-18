@@ -139,12 +139,13 @@ public class GameService {
 	}
 	
 	@Scheduled(fixedDelay=5000)
-	public void dayNightSwitch()
+	public String dayNightSwitch()
 	{
-		gameDao.dayNightSwitch();
+		String s = gameDao.dayNightSwitch();
 		int x = playerDao.checkGameState();
 		if(x != 2)
 			endGame(x);
+		return s;
 	}
 	
 

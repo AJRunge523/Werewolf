@@ -84,8 +84,7 @@ public class HomeController {
 		}
 		else
 		{
-			return new JsonResponse("failure", result)
+			return new JsonResponse("failure", result);
 		}
-		return "success";
 	}
 }
