@@ -2,13 +2,13 @@ package edu.wm.werewolf.domain;
 
 public class JsonResponse {
 
-	private final String success = "SUCCESS";
-	private final String failure = "FAILURE";
 	private String status;
+	private Object data;
 	
-	public JsonResponse(){
+	public JsonResponse(String status, Object data){
 		super();
-		this.status=success;
+		this.status=status;
+		this.setData(data);
 	}
 	
 	public String getStatus() {
@@ -16,6 +16,14 @@ public class JsonResponse {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
 	}
 	
 }

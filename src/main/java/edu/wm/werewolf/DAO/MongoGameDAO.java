@@ -20,21 +20,23 @@ public class MongoGameDAO implements IGameDAO {
 
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
 	MongoTemplate mongoTemplate = ctx.getBean(MongoTemplate.class);
+	private Game game;
 	@Override
 	public boolean isNight() {
-
-			Game game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
-			if(game==null)
-				return false;
-			System.out.println(game.isNight());
-			return game.isNight();
+		if(game==null)	
+			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+		if(game==null)
+			return false;
+		System.out.println(game.isNight());
+		return game.isNight();
 	}
 
 	@Override
-	public void dayNightSwitch() {
-		Game game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+	public String dayNightSwitch() {
 		if(game==null)
-			return;
+			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+		if(game==null)
+			return "Failed to connect to database";
 		boolean isNight = isNight();
 		game.incrementNight();
 		System.out.println(isNight +", Actuallity: " + game.isNight());
@@ -56,8 +58,8 @@ public class MongoGameDAO implements IGameDAO {
 			hangPlayer();
 			mongoTemplate.updateMulti(query(where("_class").is("edu.wm.werewolf.domain.Player")), new Update().set("voteID", ""), Player.class);
 			//mongoTemplate.getDb().getMongo().close();
-
 		}
+		return "success";
 	}
 
 	private void hangPlayer() {

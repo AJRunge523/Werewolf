@@ -4,5 +4,5 @@ public interface IGameDAO {
 
 	public boolean isNight();
 	
-	public void dayNightSwitch();
+	public String dayNightSwitch();
 }
