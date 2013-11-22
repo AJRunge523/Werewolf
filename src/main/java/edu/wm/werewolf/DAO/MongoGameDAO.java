@@ -3,6 +3,7 @@ package edu.wm.werewolf.DAO;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,6 +96,21 @@ public class MongoGameDAO implements IGameDAO {
 		}
 		
 		//****Score stuff will go here ********
+	}
+
+	@Override
+	public List<String> getGameState() {
+		List<String> stats = new ArrayList<String>();
+		if(game==null)
+			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+		if(game==null)
+			return null;
+		if(game.isNight())
+			stats.add("night");
+		else
+			stats.add("day");
+		stats.add(String.valueOf(game.timeToNextNight()));
+		return stats;
 	}
 
 }

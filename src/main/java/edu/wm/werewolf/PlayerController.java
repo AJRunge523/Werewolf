@@ -38,7 +38,7 @@ public class PlayerController {
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody JsonResponse getAll()
 	{
-		List<SimplePlayer> players = gameService.getAllAlive();
+		List<SimplePlayer> players = gameService.getAll();
 		logger.info("Players: {}", players.toString());
 		return new JsonResponse("success", players);
 

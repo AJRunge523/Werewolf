@@ -52,13 +52,19 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	/**
 	 * Retrieving from database
 	 */
-	public List<SimplePlayer> getAllAlive() {
+	public List<SimplePlayer> getAll() {
 		List<Player> p = new ArrayList<Player>();
 		p = mongoTemplate.findAll(Player.class);
 		List<SimplePlayer> players = new ArrayList<SimplePlayer>();
 		for(Player x: p)
 			players.add(new SimplePlayer(x));
 		return players;
+	}
+	
+	public List<Player> getAllFull() {
+		List<Player> p = new ArrayList<Player>();
+		p = mongoTemplate.findAll(Player.class);
+		return p;
 	}
 
 	@Override

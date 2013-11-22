@@ -25,9 +25,14 @@ public class GameService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
-	public List<SimplePlayer> getAllAlive()
+	public List<SimplePlayer> getAll()
 	{
-		return playerDao.getAllAlive();
+		return playerDao.getAll();
+	}
+	
+	public List<Player> getAllFull()
+	{
+		return playerDao.getAllFull();
 	}
 	
 	public Player getPlayerByName(String name)
@@ -132,6 +137,12 @@ public class GameService {
 	public void updatePosition(String userName, GPSLocation location) {
 		MyUser u = userDao.getUserByName(userName);
 		playerDao.setPlayerLocation(u.getId(), location);
+	}
+	
+	public List<String> getGameState()
+	{
+		List<String> gameState = gameDao.getGameState();
+		return gameState;
 	}
 	
 	@Scheduled(fixedDelay=300000)

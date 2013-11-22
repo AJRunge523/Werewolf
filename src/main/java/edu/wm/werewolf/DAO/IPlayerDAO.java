@@ -12,7 +12,9 @@ public interface IPlayerDAO {
 
 	public void insertPlayer(Player player);
 	
-	public List<SimplePlayer> getAllAlive();
+	public List<SimplePlayer> getAll();
+	
+	public List<Player> getAllFull();
 	
 	public Player getPlayerByName(String id);
 

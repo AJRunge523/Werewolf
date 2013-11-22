@@ -4,7 +4,7 @@ import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -103,8 +103,39 @@ public class HomeController {
 				response.put("STATUS", player.isDead() ? "DEAD" : "ALIVE");
 			}
 		}
-		return new JsonResponse("success", response);
-			
+		return new JsonResponse("success", response);	
+	}
+	@RequestMapping(value = "/auth/game", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse getGameStats(Principal principal)
+	{
+		HashMap<String, String> response = new HashMap<String, String>();
+		List<Player> players = gameService.getAllFull();
+		if(players == null)
+			return new JsonResponse("failure", "Database Error");
+		int aliveCount = 0, ww = 0;
+		for(Player x: players)
+		{
+			if(!x.isDead())
+			{
+				aliveCount++;
+				System.out.println(x.getUserID() + ", " + x.isDead());
+			}
+			if(x.isWerewolf() && !x.isDead())
+				ww++;
+		}
+		List<String> gameState = gameService.getGameState();
+		if(gameState == null)
+			return new JsonResponse("failure", "Database Error");
+		else
+		{
+			response.put("alive", String.valueOf(aliveCount));
+			response.put("players", String.valueOf(players.size()));
+			response.put("ww", String.valueOf(ww));
+			response.put("time", gameState.get(0));
+			response.put("left", gameState.get(1));
+			return new JsonResponse("success", response);
+		}
+		
 	}
 	
 }

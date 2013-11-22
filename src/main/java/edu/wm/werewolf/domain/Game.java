@@ -59,4 +59,9 @@ public class Game {
 	public boolean isNight() {
 		return this.isNight;
 	}
+	public long timeToNextNight() {
+		Date d = new Date();
+		long dt = d.getTime() - this.createdDate.getTime();
+		return dayNightFreq - (dt % dayNightFreq);
+	}
 }
