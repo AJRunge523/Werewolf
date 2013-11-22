@@ -14,7 +14,7 @@ public interface IPlayerDAO {
 	
 	public List<SimplePlayer> getAllAlive();
 	
-	public Player getPlayerByName(String id) throws NoPlayerFoundException;
+	public Player getPlayerByName(String id);
 
 	public void setPlayerLocation(String id, GPSLocation location);
 

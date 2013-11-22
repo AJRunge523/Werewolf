@@ -62,7 +62,7 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	}
 
 	@Override
-	public Player getPlayerByName(String id) throws NoPlayerFoundException {
+	public Player getPlayerByName(String id){
 		return mongoTemplate.findOne(query(where("userID").is(id)), Player.class);
 	}
 	
@@ -80,10 +80,14 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	@Override
 	public List<Player> getNearbyPlayers(String id) {
 		Player p = mongoTemplate.findOne(query(where("_id").is(id)), Player.class);
-		System.out.println(p);
-		List<Player> u = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.001))
+		if(p!=null)
+		{
+			List<Player> u = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.001))
 				.addCriteria(where("_id").ne(id)), Player.class);
-		return u;
+			return u;
+		}
+		else
+			return null;
 	}
 
 	@Override

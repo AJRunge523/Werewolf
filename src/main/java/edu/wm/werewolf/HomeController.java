@@ -1,7 +1,10 @@
 package edu.wm.werewolf;
 
+import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.MyUser;
+import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.exceptions.DuplicateUserException;
 import edu.wm.werewolf.service.GameService;
 import edu.wm.werewolf.service.IUserService;
@@ -76,4 +81,30 @@ public class HomeController {
 		gameService.dayNightSwitch();
 		return new JsonResponse("success", null);
 	}
+	
+	@RequestMapping(value = "/auth/verify", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse verifyUser(Principal principal)
+	{
+		HashMap<String, String> response = new HashMap<String, String>();
+		MyUser user = gameService.getUserByName(principal.getName());
+		if(user==null)
+			return new JsonResponse("failure", "User not found");
+		else
+		{
+			Player player = gameService.getPlayerByName(principal.getName());
+			String s = user.getAuthorities().toString();
+			s = s.substring(1, s.length()-1);
+			response.put("ROLE", s);
+			if(player==null)
+				response.put("TYPE", "null");
+			else
+			{
+				response.put("TYPE", player.isWerewolf() ? "WOLF" : "TOWN");
+				response.put("STATUS", player.isDead() ? "DEAD" : "ALIVE");
+			}
+		}
+		return new JsonResponse("success", response);
+			
+	}
+	
 }

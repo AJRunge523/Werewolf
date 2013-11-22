@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.domain.SimplePlayer;
 import edu.wm.werewolf.exceptions.NoPlayerFoundException;
@@ -40,21 +41,19 @@ public class PlayerController {
 		List<SimplePlayer> players = gameService.getAllAlive();
 		logger.info("Players: {}", players.toString());
 		return new JsonResponse("success", players);
+
 		//return "butts";
 	}
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public @ResponseBody JsonResponse getPlayerByID(@PathVariable String name, Principal principal)
 	{
-		try {
 			Player player = gameService.getPlayerByName(name);
 			logger.info("ID number received: {}", name);
-			return new JsonResponse("success", player);
-		} catch (NoPlayerFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.info("Id number received: {}", name);
-			return new JsonResponse("failure", e.getMessage());
-		}
+			if(player == null)
+				return new JsonResponse("failure", "No Player Found");
+			else
+				return new JsonResponse("success", player);
+
 	}
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
 	public @ResponseBody JsonResponse takeActionOnPlayer(@PathVariable String id, @RequestBody Map<String, String> body, Principal principal) {
@@ -62,23 +61,11 @@ public class PlayerController {
 	    logger.info("Body content: " + body.get("type"));
 	    if(body.get("type").equals("kill"))
 	    {
-	    	try{
-	    		return new JsonResponse("success", gameService.killPlayerByName(principal.getName(), id));
-	    	}
-	    	catch(NoPlayerFoundException e) {
-	    		logger.info("ID number received: {}", id);
-	    		return new JsonResponse("failure", e.getMessage());
-	    	}
+	    	return gameService.killPlayerByName(principal.getName(), id);
 	    }
 	    else if(body.get("type").equals("vote"))
 	    {
-	    	try{
-	    		return new JsonResponse("success", gameService.votePlayerByName(principal.getName(), id));
-	    	}
-	    	catch(NoPlayerFoundException e) {
-	    		logger.info("ID number received: {}", id);
-	    		return null;
-	    	}
+	    	return gameService.votePlayerByName(principal.getName(), id);
 	    }
 	    else return new JsonResponse("failure", "invalid action type");
 	}
@@ -97,27 +84,17 @@ public class PlayerController {
 		List<Player> players;
 		JsonResponse response;
 		GPSLocation location = new GPSLocation(body.get("lat"), body.get("lon"));
-		try {
-			if(!gameService.getPlayerByName(principal.getName()).isWerewolf())
-			{
-				response = new JsonResponse("failure", "Player is not a werewolf");
-				return response;
-			}
-		} catch (NoPlayerFoundException e1) {
-			e1.printStackTrace();
-			response = new JsonResponse("failure", e1.getMessage());
+		Player p = gameService.getPlayerByName(principal.getName());
+		if(p==null)
+			return new JsonResponse("Failure", "No player found");
+		else if(!p.isWerewolf())
+		{
+			response = new JsonResponse("failure", "Player is not a werewolf");
 			return response;
 		}
 		logger.info("Checking for players near to" + principal.getName() + "s location: " + location);
 		gameService.updatePosition(principal.getName(), location);
-		try {
-			players = gameService.getNearbyPlayers(principal.getName());
-		} catch (NoPlayerFoundException e) {
-			// TODO Auto-generated catch block
-			response = new JsonResponse("failure", e.getMessage());
-			e.printStackTrace();
-			return response;
-		}
+		players = gameService.getNearbyPlayers(principal.getName());
 		response = new JsonResponse("success", players);
 		return response;
 	}

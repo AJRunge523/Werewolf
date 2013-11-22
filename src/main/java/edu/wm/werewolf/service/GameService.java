@@ -1,22 +1,21 @@
 package edu.wm.werewolf.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import edu.wm.werewolf.HomeController;
 import edu.wm.werewolf.DAO.IGameDAO;
 import edu.wm.werewolf.DAO.IPlayerDAO;
 import edu.wm.werewolf.DAO.IUserDAO;
 import edu.wm.werewolf.domain.GPSLocation;
-import edu.wm.werewolf.domain.Player;
+import edu.wm.werewolf.domain.JsonResponse;
 import edu.wm.werewolf.domain.MyUser;
+import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.domain.SimplePlayer;
-import edu.wm.werewolf.exceptions.NoPlayerFoundException;
 
 public class GameService {
 
@@ -31,7 +30,7 @@ public class GameService {
 		return playerDao.getAllAlive();
 	}
 	
-	public Player getPlayerByName(String name) throws NoPlayerFoundException
+	public Player getPlayerByName(String name)
 	{
 		return playerDao.getPlayerByName(name);
 	}
@@ -41,46 +40,54 @@ public class GameService {
 		return true;
 	}
 	
-	public String killPlayerByName(String killerID, String victimID) throws NoPlayerFoundException
+	public MyUser getUserByName(String name)
+	{
+		return userDao.getUserByName(name);
+	}
+	
+	public JsonResponse killPlayerByName(String killerID, String victimID)
 	{
 		Player killer, victim;
 		if((killer=getPlayerByName(killerID))!=null && (victim=getPlayerByName(victimID))!=null)
 		{
 			if(!killer.isWerewolf())
 			{
-				return "Failure: Illegal operation: kill";
+				return new JsonResponse("failure", "1 Illegal operation: kill");
 			}
 			if(!playerDao.inRange(killerID, victimID))
 			{
-				return "Failure: Player not in range";
+				return new JsonResponse("failure", "2 Player not in range");
 			}
 			else if(victim.isDead())
 			{
-				return "Failure: player is already dead";
+				return new JsonResponse("failure", "3 player is already dead");
 			}
 			else if(victim.isWerewolf())
 			{
-				return "Failure: Cannot kill another werewolf";
+				return new JsonResponse("failure", "4 Cannot kill another werewolf");
 			}
 			else if(!gameDao.isNight())
 			{
-				return "Failure: Cannot kill during the day";
+				return new JsonResponse("failure", "5 Cannot kill during the day");
 			}
 			else if(!killer.getVoteID().equals(""))
 			{
-				return "Failure: Already killed one person today";
+				return new JsonResponse("failure", "6 Already killed one person today");
 			}
 			else
 			{
 				playerDao.generateKill(killer, victim);
+				int state = playerDao.checkGameState();
+				if(state==0 || state==1)
+				{
+					endGame(state);
+				}
+				return new JsonResponse("success", victim.getUserID());
 			}
 		}
-		int state = playerDao.checkGameState();
-		if(state==0 || state==1)
-		{
-			endGame(state);
-		}
-		return "success";
+		else
+			return new JsonResponse("failure", "7 Invalid Target or Killer");
+
 		
 	}
 
@@ -100,7 +107,7 @@ public class GameService {
 		userDao.createNewGame(cycleTime);
 	}
 	
-	public String votePlayerByName(String voterID, String votedID) throws NoPlayerFoundException {
+	public JsonResponse votePlayerByName(String voterID, String votedID){
 		Player voter, voted;
 		if((voter=getPlayerByName(voterID))!=null && (voted=getPlayerByName(votedID))!=null)
 		{
@@ -109,16 +116,16 @@ public class GameService {
 				if(!gameDao.isNight())
 				{
 					playerDao.vote(voter, voted);
-					return "success";
+					return new JsonResponse("success", voted);
 				}
 				else
-					return "Failure: Cannot vote at night";
+					return new JsonResponse("failure", "1 Cannot vote at night");
 			}
 			else
-				return "Failure, invalid vote";
+				return new JsonResponse("failure", "2 invalid vote");
 		}
 		else
-			return "Invalid player ID";
+			return new JsonResponse("failure", "3 Invalid player ID");
 		
 	}
 
@@ -133,7 +140,7 @@ public class GameService {
 		//logger.info("beep");
 	}
 
-	public List<Player> getNearbyPlayers(String name) throws NoPlayerFoundException {
+	public List<Player> getNearbyPlayers(String name){
 		MyUser u = userDao.getUserByName(name);
 		return playerDao.getNearbyPlayers(u.getId());
 	}
