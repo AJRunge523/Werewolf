@@ -14,18 +14,20 @@ print ("Getting list of players")
 r = requests.get('http://secret-wildwood-3803.herokuapp.com/auth/players', auth=HTTPBasicAuth(username, password))
 
 print (r.text) #Prints out the list of players
-##
-##payload = {'lat' : 37.271459, 'lon': -76.711725}
-##
+
+payload = {'lat' : 37.271459, 'lon': -76.711725}
+
 ###Updates location of player a and prints out player a's information
-##url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/location' 
-##
-##print ("Updating player's location")
-##
-##r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
-##
+url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/location' 
+
+print ("Updating player's location")
+
+r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
+
+print(r.text)
+
 ##url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/a'
-##
+
 ##r = requests.get(url, auth=HTTPBasicAuth(username, password))
 ##
 ##print ('\n')

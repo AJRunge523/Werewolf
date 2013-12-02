@@ -8,11 +8,11 @@ import json
 username = "andrew"
 password = "password"
 
-url = 'http://secret-wildwood-3803.herokuapp.com/auth/restart'
+url = 'http://localhost:8080/werewolf/auth/restart'
 
 headers = {'Content-type': 'application/json'}
 
-payload = {'time': (1000)} #Creates a game with a 1 second day/night cycle
+payload = {'time': (10000)} #Creates a game with a 1 second day/night cycle
 
 r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
 

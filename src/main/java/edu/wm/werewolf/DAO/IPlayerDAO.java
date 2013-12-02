@@ -1,12 +1,11 @@
 package edu.wm.werewolf.DAO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.Player;
+import edu.wm.werewolf.domain.PlayerTarget;
 import edu.wm.werewolf.domain.SimplePlayer;
-import edu.wm.werewolf.exceptions.NoPlayerFoundException;
 
 public interface IPlayerDAO {
 
@@ -22,7 +21,7 @@ public interface IPlayerDAO {
 
 	public void dropAll();
 
-	public List<Player> getNearbyPlayers(String id);
+	public List<PlayerTarget> getNearbyPlayers(String id);
 
 	public boolean inRange(String killerID, String victimID);
 

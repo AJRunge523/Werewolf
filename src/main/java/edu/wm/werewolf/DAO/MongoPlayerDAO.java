@@ -3,37 +3,26 @@ package edu.wm.werewolf.DAO;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.Point;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 
 import edu.wm.werewolf.config.SpringMongoConfig;
 import edu.wm.werewolf.domain.GPSLocation;
-import edu.wm.werewolf.domain.Game;
 import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.Player;
-import edu.wm.werewolf.domain.MyUser;
+import edu.wm.werewolf.domain.PlayerTarget;
 import edu.wm.werewolf.domain.SimplePlayer;
-import edu.wm.werewolf.exceptions.NoPlayerFoundException;
 
 public class MongoPlayerDAO implements IPlayerDAO {
 
@@ -84,13 +73,46 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	}
 	
 	@Override
-	public List<Player> getNearbyPlayers(String id) {
+	public List<PlayerTarget> getNearbyPlayers(String id) {
 		Player p = mongoTemplate.findOne(query(where("_id").is(id)), Player.class);
+		mongoTemplate.getCollection("players").ensureIndex(new BasicDBObject("location", "2d"));
 		if(p!=null)
 		{
 			List<Player> u = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.001))
 				.addCriteria(where("_id").ne(id)), Player.class);
-			return u;
+			List<Player> v = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.003))
+					.addCriteria(where("_id").ne(id)), Player.class);
+			List<Player> w = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.003))
+					.addCriteria(where("_id").ne(id)), Player.class);
+			List<PlayerTarget> pt = new ArrayList<PlayerTarget>();
+			for(Player player: w)
+				pt.add(new PlayerTarget(player, 2));
+			for(PlayerTarget target: pt)
+			{
+				boolean found = false;
+				for(Player player: u)
+				{
+					if(player.getUserID().equals(target.getUserID()))
+					{
+						found = true;
+						target.setDistance(0);
+						break;
+					}
+				}
+				if(found)
+					continue;
+				for(Player player: v)
+				{
+					if(player.getUserID().equals(target.getUserID()))
+					{
+						target.setDistance(1);
+						break;
+					}
+				}
+			}
+				
+			
+			return pt;
 		}
 		else
 			return null;

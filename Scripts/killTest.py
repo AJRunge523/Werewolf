@@ -13,15 +13,15 @@ headers = {'Content-type': 'application/json'}
 
 print ("Getting List of players")
 
-r = requests.get('http://secret-wildwood-3803.herokuapp.com/auth/players', auth=HTTPBasicAuth(username, password))
-
+r = requests.get('http://localhost:8080/werewolf/auth/players', auth=HTTPBasicAuth(username, password))
+#http://secret-wildwood-3803.herokuapp.com/auth/players
 
 print (r.text) #Prints out the list of players
 
 payload = {'lat' : 0.0, 'lon': 0.0}
 
 #Updates location of player a and prints out player a's information
-url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/nearbyPlayers' 
+url = 'http://localhost:8080/werewolf/auth/players/nearbyPlayers' 
 
 print ("Retrieving nearby players. As part of this, player's information will be updated")
 
@@ -38,12 +38,13 @@ print (r.text)
 # 3. abc is a werewolf, and ab is not a werewolf - change credentials/url
 # accordingly, to make sure the killer is a werewolf and the target isn't
 #Need to check output window to make sure it's day
-url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/ab'
-
-payload = {'type': 'kill'}
-
-print ("Attempting to kill player abc")
-
-r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
-
-print(r.text)
+##
+##url = 'http://secret-wildwood-3803.herokuapp.com/auth/players/ab'
+##
+##payload = {'type': 'kill'}
+##
+##print ("Attempting to kill player abc")
+##
+##r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
+##
+##print(r.text)

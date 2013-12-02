@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.JsonResponse;
-import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
+import edu.wm.werewolf.domain.PlayerTarget;
 import edu.wm.werewolf.domain.SimplePlayer;
-import edu.wm.werewolf.exceptions.NoPlayerFoundException;
 import edu.wm.werewolf.service.GameService;
 
 /**
@@ -70,20 +69,20 @@ public class PlayerController {
 	    else return new JsonResponse("failure", "invalid action type");
 	}
 	@RequestMapping(value = "/location", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse setLocation(@RequestBody Map<String, Double> body, Principal principal)
+	public @ResponseBody JsonResponse setLocation(@RequestBody Map<String, String> body, Principal principal)
 	{
-		GPSLocation loc = new GPSLocation(body.get("lat"), body.get("lon"));
+		GPSLocation loc = new GPSLocation(Double.valueOf(body.get("lat")), Double.valueOf(body.get("lon")));
 		logger.info("Setting" + principal.getName() + "'s location to: " + loc);
 		gameService.updatePosition(principal.getName(), loc);
 		JsonResponse response = new JsonResponse("success", null);
 		return response;
 	}
 	@RequestMapping(value = "/nearbyPlayers", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse getNearbyPlayers(@RequestBody Map<String, Double> body, Principal principal)
+	public @ResponseBody JsonResponse getNearbyPlayers(@RequestBody Map<String, String> body, Principal principal)
 	{
-		List<Player> players;
+		List<PlayerTarget> players;
 		JsonResponse response;
-		GPSLocation location = new GPSLocation(body.get("lat"), body.get("lon"));
+		GPSLocation location = new GPSLocation(Double.valueOf(body.get("lat")), Double.valueOf(body.get("lon")));
 		Player p = gameService.getPlayerByName(principal.getName());
 		if(p==null)
 			return new JsonResponse("Failure", "No player found");

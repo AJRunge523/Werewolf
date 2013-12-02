@@ -15,6 +15,7 @@ import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.JsonResponse;
 import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
+import edu.wm.werewolf.domain.PlayerTarget;
 import edu.wm.werewolf.domain.SimplePlayer;
 
 public class GameService {
@@ -151,7 +152,7 @@ public class GameService {
 		//logger.info("beep");
 	}
 
-	public List<Player> getNearbyPlayers(String name){
+	public List<PlayerTarget> getNearbyPlayers(String name){
 		MyUser u = userDao.getUserByName(name);
 		return playerDao.getNearbyPlayers(u.getId());
 	}
