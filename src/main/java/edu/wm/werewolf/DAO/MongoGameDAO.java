@@ -31,6 +31,15 @@ public class MongoGameDAO implements IGameDAO {
 		System.out.println(game.isNight());
 		return game.isNight();
 	}
+	
+	public boolean isRunning() {
+		if(game==null)	
+			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+		if(game==null)
+			return false;
+		System.out.println(game.isRunning());
+		return game.isRunning();
+	}
 
 	@Override
 	public String dayNightSwitch() {
@@ -105,11 +114,16 @@ public class MongoGameDAO implements IGameDAO {
 			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
 		if(game==null)
 			return null;
+		if(!game.isRunning())
+		{
+			stats.add("no");
+		}
 		if(game.isNight())
 			stats.add("night");
 		else
 			stats.add("day");
 		stats.add(String.valueOf(game.timeToNextNight()));
+		stats.add(String.valueOf(game.getCreatedDate()));
 		return stats;
 	}
 

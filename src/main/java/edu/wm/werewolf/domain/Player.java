@@ -1,8 +1,10 @@
 package edu.wm.werewolf.domain;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "players")
 public class Player {
@@ -14,6 +16,7 @@ public class Player {
 	private String voteID;
 	private double[] location;
 	private int score;
+	private Date lastUpdate;
 	public Player(String id, boolean isDead, double lat, 
 			double lon, String userID, boolean isWerewolf, int score) {
 		super();
@@ -24,6 +27,7 @@ public class Player {
 		this.isWerewolf = isWerewolf;
 		this.setVoteID("");
 		this.setScore(score);
+	
 	}
 	@PersistenceConstructor
 	public Player(String id, boolean isDead, double[] location, String userID, boolean isWerewolf)
@@ -76,5 +80,11 @@ public class Player {
 	}
 	public void setScore(int score) {
 		this.score = score;
+	}
+	public Date getLastUpdate() {
+		return lastUpdate;
+	}
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 }

@@ -64,7 +64,9 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	public void setPlayerLocation(String id, GPSLocation loc){
 		mongoTemplate.updateFirst(new Query(where("_id").is(id)), 
 				new Update().set("location", new double[] {loc.getLat(), loc.getLon()}), Player.class);
-		
+		Date d = new Date();
+		mongoTemplate.updateFirst(new Query(where("_id").is(id)), 
+				new Update().set("lastUpdate", d), Player.class);
 	}
 
 	@Override

@@ -46,6 +46,11 @@ public class GameService {
 		return true;
 	}
 	
+	public List<MyUser> getAllUsers()
+	{
+		return userDao.getAllUsers();
+	}
+	
 	public MyUser getUserByName(String name)
 	{
 		return userDao.getUserByName(name);
@@ -144,6 +149,11 @@ public class GameService {
 	{
 		List<String> gameState = gameDao.getGameState();
 		return gameState;
+	}
+	
+	public boolean isGameRunning()
+	{
+		return gameDao.isRunning();
 	}
 	
 	@Scheduled(fixedDelay=300000)

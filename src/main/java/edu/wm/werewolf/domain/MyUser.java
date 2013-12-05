@@ -22,6 +22,7 @@ public class MyUser extends User{
 	private String imageURL;
 	private String hashedPassword;
 	private int score;
+	private boolean isPlaying;
 	public MyUser(String firstName, String lastName, String username,
 			String hashedPassword, String imageURL, Collection<GrantedAuthority> authorities, int score) {
 		super(username, BCrypt.hashpw(hashedPassword, BCrypt.gensalt()), true, true, true, true, authorities);
@@ -31,6 +32,7 @@ public class MyUser extends User{
 		this.imageURL = imageURL;
 		this.hashedPassword = this.getPassword();
 		this.score=score;
+		this.setPlaying(false);
 		
 	}
 	public String getId() {
@@ -74,6 +76,12 @@ public class MyUser extends User{
 	}
 	public void setScore(int score) {
 		this.score = score;
+	}
+	public boolean isPlaying() {
+		return isPlaying;
+	}
+	public void setPlaying(boolean isPlaying) {
+		this.isPlaying = isPlaying;
 	}
 
 	

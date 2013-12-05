@@ -82,6 +82,37 @@ public class HomeController {
 		return new JsonResponse("success", null);
 	}
 	
+	@RequestMapping(value = "/auth/adminInfo", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse adminInfo()
+	{
+		HashMap<String, Object> response = new HashMap<String, Object>();
+		List<Player> players = gameService.getAllFull();
+		List<MyUser> users = gameService.getAllUsers();
+		List<String> gameState = gameService.getGameState();
+		if(gameState == null)
+			return new JsonResponse("failure", "Database Error");
+		else if(gameState.get(0).equals("no"))
+			return new JsonResponse("failure", "No active game");
+			
+		else
+		{
+			int aliveCount = 0;
+			for(Player p: players)
+			{
+				if(!p.isDead())
+					aliveCount++;
+			}
+			response.put("alive", String.valueOf(aliveCount));
+			response.put("players", String.valueOf(players.size()));
+			response.put("time", gameState.get(0));
+			response.put("left", gameState.get(1));
+			response.put("created", gameState.get(2));
+			response.put("users", users);
+			response.put("players", players);
+			return new JsonResponse("success", response);
+		}
+	}
+	
 	@RequestMapping(value = "/auth/verify", method = RequestMethod.GET)
 	public @ResponseBody JsonResponse verifyUser(Principal principal)
 	{
@@ -126,6 +157,9 @@ public class HomeController {
 		List<String> gameState = gameService.getGameState();
 		if(gameState == null)
 			return new JsonResponse("failure", "Database Error");
+		else if(gameState.get(0).equals("no"))
+			return new JsonResponse("failure", "No active game");
+			
 		else
 		{
 			response.put("alive", String.valueOf(aliveCount));
@@ -133,6 +167,7 @@ public class HomeController {
 			response.put("ww", String.valueOf(ww));
 			response.put("time", gameState.get(0));
 			response.put("left", gameState.get(1));
+			response.put("created", gameState.get(2));
 			return new JsonResponse("success", response);
 		}
 		

@@ -8,7 +8,7 @@ import json
 username = "andrew"
 password = "password"
 
-url = 'http://localhost:8080/werewolf/auth/restart'
+url = 'http://secret-wildwood-3803.herokuapp.com/auth/restart'
 
 headers = {'Content-type': 'application/json'}
 

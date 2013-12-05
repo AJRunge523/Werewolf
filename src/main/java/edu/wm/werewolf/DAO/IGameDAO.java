@@ -9,4 +9,6 @@ public interface IGameDAO {
 	public String dayNightSwitch();
 
 	public List<String> getGameState();
+	
+	public boolean isRunning();
 }

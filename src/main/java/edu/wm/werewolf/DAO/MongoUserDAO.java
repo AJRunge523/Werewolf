@@ -58,8 +58,10 @@ public class MongoUserDAO implements IUserDAO {
 	public MyUser getUserByName(String username) {
 		MyUser u = mongoTemplate.findOne(query(where("username").is(username)), MyUser.class);
 		return u;
-
-		
+	}
+	
+	public void setAllUsersPlaying(boolean value) {
+		mongoTemplate.updateMulti(query(where("_class").is("edu.wm.werewolf.domain.MyUser")), new Update().set("isPlaying", value), MyUser.class);
 	}
 	
 	@Override
@@ -80,10 +82,12 @@ public class MongoUserDAO implements IUserDAO {
 		for(int n = 0; n<users.size(); n++)
 		{
 			Player p = new Player(users.get(n).getId(), false, 0.0, 0.0, users.get(n).getUsername(), false, 0);
+			
 			if(j.contains(n))
 				p.setWerewolf(true);
 			mongoTemplate.insert(p);
 		}
+		setAllUsersPlaying(true);
 		System.out.println("Finished adding game");
 		mongoTemplate.getCollection("players").ensureIndex(new BasicDBObject("location", "2d"));
 		Game g = new Game(new Date(), cycleTime);
