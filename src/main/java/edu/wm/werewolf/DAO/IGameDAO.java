@@ -11,4 +11,6 @@ public interface IGameDAO {
 	public List<String> getGameState();
 	
 	public boolean isRunning();
+	
+	public void reloadGame();
 }

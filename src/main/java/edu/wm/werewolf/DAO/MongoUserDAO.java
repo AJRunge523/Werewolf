@@ -93,6 +93,7 @@ public class MongoUserDAO implements IUserDAO {
 		Game g = new Game(new Date(), cycleTime);
 		mongoTemplate.dropCollection(Game.class);
 		mongoTemplate.insert(g);
+		
 		mongoTemplate.dropCollection(Kill.class);
 	}
 

@@ -32,6 +32,10 @@ public class MongoGameDAO implements IGameDAO {
 		return game.isNight();
 	}
 	
+	public void reloadGame() {
+		game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);
+	}
+	
 	public boolean isRunning() {
 		if(game==null)	
 			game = mongoTemplate.findOne(query(where("_class").is("edu.wm.werewolf.domain.Game")), Game.class);

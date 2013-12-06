@@ -116,6 +116,7 @@ public class GameService {
 	{
 		playerDao.dropAll();
 		userDao.createNewGame(cycleTime);
+		gameDao.reloadGame();
 	}
 	
 	public JsonResponse votePlayerByName(String voterID, String votedID){

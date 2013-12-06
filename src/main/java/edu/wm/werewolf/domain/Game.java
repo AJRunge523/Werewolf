@@ -48,8 +48,10 @@ public class Game {
 		if(((int)dt/dayNightFreq) % 2 == 0)
 		{
 			setNight(true);
+			System.out.println(timeToNextNight());
 			return true;
 		}
+		System.out.println(timeToNextNight());
 		setNight(false);
 		return false;
 	}

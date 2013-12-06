@@ -12,7 +12,7 @@ url = 'http://secret-wildwood-3803.herokuapp.com/auth/restart'
 
 headers = {'Content-type': 'application/json'}
 
-payload = {'time': (10000)} #Creates a game with a 1 second day/night cycle
+payload = {'time': (900000)} #Creates a game with a 1 second day/night cycle
 
 r = requests.post(url, auth=HTTPBasicAuth(username, password), data=json.dumps(payload), headers=headers)
 
