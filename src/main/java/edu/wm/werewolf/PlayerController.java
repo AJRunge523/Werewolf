@@ -78,11 +78,12 @@ public class PlayerController {
 		JsonResponse response = new JsonResponse("success", null);
 		return response;
 	}
-	@RequestMapping(value = "/nearbyPlayers", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse getNearbyPlayers(@RequestBody Map<String, String> body, Principal principal)
+	@RequestMapping(value = "/nearbyPlayers", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse getNearbyPlayers(Principal principal)
 	{
 		List<PlayerTarget> players;
 		JsonResponse response;
+		/*
 		GPSLocation location = new GPSLocation(Double.valueOf(body.get("lat")), Double.valueOf(body.get("lon")));
 		Player p = gameService.getPlayerByName(principal.getName());
 		if(p==null)
@@ -94,6 +95,7 @@ public class PlayerController {
 		}
 		logger.info("Checking for players near to" + principal.getName() + "s location: " + location);
 		gameService.updatePosition(principal.getName(), location);
+		*/
 		players = gameService.getNearbyPlayers(principal.getName());
 		response = new JsonResponse("success", players);
 		return response;

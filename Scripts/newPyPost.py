@@ -15,7 +15,7 @@ r = requests.get('http://secret-wildwood-3803.herokuapp.com/auth/players', auth=
 
 print (r.text) #Prints out the list of players
 
-payload = {'lat' : "37.271459", 'lon': "-76.711725"}
+payload = {'lat' : "37.2686429", 'lon': "-76.7126329"}
 
 print(json.dumps(payload))
 

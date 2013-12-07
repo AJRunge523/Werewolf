@@ -13,8 +13,9 @@ public class Kill {
 	private double lat;
 	private double lon;
 	private int type;
+	private boolean werewolf;
 	public Kill(String killerID, String victimID, Date timestamp, double lat,
-			double lon, int type) {
+			double lon, int type, boolean werewolf) {
 		super();
 		this.killerID = killerID;
 		this.victimID = victimID;
@@ -22,6 +23,7 @@ public class Kill {
 		this.lat = lat;
 		this.lon = lon;
 		this.setType(type);
+		this.setWerewolf(werewolf);
 	}
 	public String getKillerID() {
 		return killerID;
@@ -58,5 +60,11 @@ public class Kill {
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+	public boolean isWerewolf() {
+		return werewolf;
+	}
+	public void setWerewolf(boolean werewolf) {
+		this.werewolf = werewolf;
 	}
 }

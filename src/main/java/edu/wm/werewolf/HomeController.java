@@ -115,7 +115,7 @@ public class HomeController {
 					aliveCount++;
 			}
 			response.put("alive", String.valueOf(aliveCount));
-			response.put("players", String.valueOf(players.size()));
+			response.put("playerCount", String.valueOf(players.size()));
 			response.put("time", gameState.get(0));
 			response.put("left", gameState.get(1));
 			response.put("created", gameState.get(2));

@@ -62,6 +62,7 @@ public class MongoPlayerDAO implements IPlayerDAO {
 	}
 	
 	public void setPlayerLocation(String id, GPSLocation loc){
+		mongoTemplate.getCollection("players").ensureIndex(new BasicDBObject("location", "2d"));
 		mongoTemplate.updateFirst(new Query(where("_id").is(id)), 
 				new Update().set("location", new double[] {loc.getLat(), loc.getLon()}), Player.class);
 		Date d = new Date();
@@ -137,7 +138,7 @@ public class MongoPlayerDAO implements IPlayerDAO {
 		WriteResult wr = mongoTemplate.updateFirst(query(where("userID").is(victim.getUserID())),  new Update().set("isDead", true), Player.class);
 		System.out.println(wr.getError());
 		Kill k = new Kill(killer.getUserID(), victim.getUserID(), new Date(), 
-				victim.getLocation()[0], victim.getLocation()[1], 0);
+				victim.getLocation()[0], victim.getLocation()[1], 0, false);
 		mongoTemplate.insert(k);
 		mongoTemplate.updateFirst(query(where("userID").is(killer.getUserID())), 
 				new Update().set("voteID", victim.getUserID()), Player.class);

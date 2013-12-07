@@ -108,9 +108,10 @@ public class MongoGameDAO implements IGameDAO {
 		}
 		if(!selected.equals(""))
 		{
+			Player p = mongoTemplate.findOne(query(where("userID").is(selected)), Player.class);
 			System.out.println("Someone was killed: " + selected);
 			mongoTemplate.updateFirst(query(where("userID").is(selected)), new Update().set("isDead", true), Player.class);
-			Kill k = new Kill("Mob", selected, new Date(), 0, 0, 1);
+			Kill k = new Kill("Mob", selected, new Date(), 0, 0, 1, p.isWerewolf());
 			mongoTemplate.insert(k);
 		}
 
@@ -128,7 +129,7 @@ public class MongoGameDAO implements IGameDAO {
 			{
 				WriteResult wr = mongoTemplate.updateFirst(query(where("userID").is(id)),  new Update().set("isDead", true), Player.class);
 				Kill k = new Kill("God", id, new Date(), 
-					0, 0, 2);
+					0, 0, 2, p.isWerewolf());
 				mongoTemplate.insert(k);
 			}
 		}
