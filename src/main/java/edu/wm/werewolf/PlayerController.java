@@ -68,6 +68,7 @@ public class PlayerController {
 	    }
 	    else return new JsonResponse("failure", "invalid action type");
 	}
+	
 	@RequestMapping(value = "/location", method = RequestMethod.POST)
 	public @ResponseBody JsonResponse setLocation(@RequestBody Map<String, String> body, Principal principal)
 	{

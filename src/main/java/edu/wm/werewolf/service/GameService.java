@@ -1,6 +1,7 @@
 package edu.wm.werewolf.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import edu.wm.werewolf.DAO.IPlayerDAO;
 import edu.wm.werewolf.DAO.IUserDAO;
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.domain.PlayerTarget;
@@ -29,6 +31,16 @@ public class GameService {
 	public List<SimplePlayer> getAll()
 	{
 		return playerDao.getAll();
+	}
+	
+	public boolean removeUsers(Map<String, String> userIDs)
+	{
+		for(String s: userIDs.keySet())
+		{
+			userDao.removeUserById(userIDs.get(s));
+			gameDao.smitePlayer(userIDs.get(s));
+		}
+		return true;
 	}
 	
 	public List<Player> getAllFull()
@@ -156,16 +168,15 @@ public class GameService {
 	{
 		return gameDao.isRunning();
 	}
-	
-	@Scheduled(fixedDelay=300000)
-	private void checkLocationUpdates()
-	{
-		//logger.info("beep");
-	}
 
 	public List<PlayerTarget> getNearbyPlayers(String name){
 		MyUser u = userDao.getUserByName(name);
 		return playerDao.getNearbyPlayers(u.getId());
+	}
+	
+	public List<Kill> getKills()
+	{
+		return gameDao.getKills();
 	}
 	
 	@Scheduled(fixedDelay=5000)
@@ -175,6 +186,12 @@ public class GameService {
 		int x = playerDao.checkGameState();
 		if(x != 2)
 			endGame(x);
+	}
+
+	public JsonResponse smitePlayers(Map<String, String> playerIDs) {
+		for(String s: playerIDs.keySet())
+			gameDao.smitePlayer(playerIDs.get(s));
+		return new JsonResponse("success", null);
 	}
 	
 

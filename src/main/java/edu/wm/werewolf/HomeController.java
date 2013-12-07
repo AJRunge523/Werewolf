@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
 import edu.wm.werewolf.exceptions.DuplicateUserException;
@@ -74,12 +75,23 @@ public class HomeController {
 		gameService.restartGame(cycle.get("time"));
 		return new JsonResponse("success", null);
 	}
-	@RequestMapping(value = "/switch", method = RequestMethod.GET)
+	@RequestMapping(value = "/auth/switch", method = RequestMethod.GET)
 	public @ResponseBody JsonResponse switchTimes()
 	{
 		logger.info("attempting to switch from night to day");
 		gameService.dayNightSwitch();
 		return new JsonResponse("success", null);
+	}
+	
+	
+	
+	@RequestMapping(value = "/auth/kills", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse getKills()
+	{
+		List<Kill> listOfKills = gameService.getKills();
+		if(listOfKills.size() <= 0)
+			return new JsonResponse("failure", "No kills yet!");
+		return new JsonResponse("success", listOfKills);
 	}
 	
 	@RequestMapping(value = "/auth/adminInfo", method = RequestMethod.GET)
@@ -170,7 +182,26 @@ public class HomeController {
 			response.put("created", gameState.get(2));
 			return new JsonResponse("success", response);
 		}
-		
 	}
+	
+	@RequestMapping(value = "/auth/removeUser", method = RequestMethod.POST)
+	public @ResponseBody JsonResponse removeUsers(@RequestBody Map<String, String> userIDs)
+	{
+		logger.info("attempting to remove users");
+		
+		gameService.removeUsers(userIDs);
+		return new JsonResponse("success", null);
+	}
+	
+	@RequestMapping(value = "/auth/smitePlayer", method = RequestMethod.POST)
+	public @ResponseBody JsonResponse smitePlayers(@RequestBody Map<String, String> userIDs)
+	{
+		logger.info("attempting to remove users");
+		
+		gameService.smitePlayers(userIDs);
+		return new JsonResponse("success", null);
+	}
+	
+	
 	
 }

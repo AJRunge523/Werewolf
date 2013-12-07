@@ -2,6 +2,8 @@ package edu.wm.werewolf.DAO;
 
 import java.util.List;
 
+import edu.wm.werewolf.domain.Kill;
+
 public interface IGameDAO {
 
 	public boolean isNight();
@@ -13,4 +15,8 @@ public interface IGameDAO {
 	public boolean isRunning();
 	
 	public void reloadGame();
+	
+	public boolean smitePlayer(String id);
+	
+	public List<Kill> getKills();
 }

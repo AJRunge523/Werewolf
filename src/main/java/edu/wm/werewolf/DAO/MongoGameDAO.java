@@ -4,6 +4,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,8 +14,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.mongodb.WriteResult;
+
 import edu.wm.werewolf.config.SpringMongoConfig;
 import edu.wm.werewolf.domain.Game;
+import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.Player;
 
 public class MongoGameDAO implements IGameDAO {
@@ -102,15 +106,40 @@ public class MongoGameDAO implements IGameDAO {
 				voteMax = votes.get(s);
 			}
 		}
-		if(selected!="")
+		if(!selected.equals(""))
 		{
 			System.out.println("Someone was killed: " + selected);
 			mongoTemplate.updateFirst(query(where("userID").is(selected)), new Update().set("isDead", true), Player.class);
+			Kill k = new Kill("Mob", selected, new Date(), 0, 0, 1);
+			mongoTemplate.insert(k);
 		}
+
 		
 		//****Score stuff will go here ********
 	}
 
+	public boolean smitePlayer(String id) {
+		System.out.println("The id is: " + id +"---");
+		Player p = mongoTemplate.findOne(query(where("userID").is(id)), Player.class);
+		if(p!=null)
+		{
+			System.out.println("THE USER EXISTS WOOP WOOP");
+			if(!p.isDead())
+			{
+				WriteResult wr = mongoTemplate.updateFirst(query(where("userID").is(id)),  new Update().set("isDead", true), Player.class);
+				Kill k = new Kill("God", id, new Date(), 
+					0, 0, 2);
+				mongoTemplate.insert(k);
+			}
+		}
+		return false;
+	}
+	
+	public List<Kill> getKills()
+	{
+		return mongoTemplate.findAll(Kill.class);
+	}
+	
 	@Override
 	public List<String> getGameState() {
 		List<String> stats = new ArrayList<String>();

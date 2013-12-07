@@ -9,6 +9,7 @@
     <http auto-config="true" use-expressions="true">
     	<intercept-url pattern="/auth/restart" access="hasRole('ROLE_ADMIN')"/>
     	<intercept-url pattern="/auth/adminInfo" access="hasRole('ROLE_ADMIN')"/>
+    	<intercept-url pattern="/auth/removeUser" access="hasRole('ROLE_ADMIN')"/>
          <intercept-url pattern="/auth/**" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')" /> 
          <intercept-url pattern="/auth/players/*" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/> 
     </http>

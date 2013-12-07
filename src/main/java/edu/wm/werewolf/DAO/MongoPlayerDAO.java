@@ -137,7 +137,7 @@ public class MongoPlayerDAO implements IPlayerDAO {
 		WriteResult wr = mongoTemplate.updateFirst(query(where("userID").is(victim.getUserID())),  new Update().set("isDead", true), Player.class);
 		System.out.println(wr.getError());
 		Kill k = new Kill(killer.getUserID(), victim.getUserID(), new Date(), 
-				victim.getLocation()[0], victim.getLocation()[1]);
+				victim.getLocation()[0], victim.getLocation()[1], 0);
 		mongoTemplate.insert(k);
 		mongoTemplate.updateFirst(query(where("userID").is(killer.getUserID())), 
 				new Update().set("voteID", victim.getUserID()), Player.class);
@@ -152,7 +152,7 @@ public class MongoPlayerDAO implements IPlayerDAO {
 		else
 			return 2;
 	}
-
+	
 	@Override
 	public void vote(Player voter, Player voted) {
 		mongoTemplate.updateFirst(query(where("userID").is(voter.getUserID())), new Update().set("voteID", voted.getUserID()), Player.class);

@@ -12,14 +12,16 @@ public class Kill {
 	private Date timestamp;
 	private double lat;
 	private double lon;
-	public Kill(String killerID, String victimID, Date timestamp, double d,
-			double e) {
+	private int type;
+	public Kill(String killerID, String victimID, Date timestamp, double lat,
+			double lon, int type) {
 		super();
 		this.killerID = killerID;
 		this.victimID = victimID;
 		this.timestamp = timestamp;
-		this.lat = d;
-		this.lon = e;
+		this.lat = lat;
+		this.lon = lon;
+		this.setType(type);
 	}
 	public String getKillerID() {
 		return killerID;
@@ -50,5 +52,11 @@ public class Kill {
 	}
 	public void setLon(double lon) {
 		this.lon = lon;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 }

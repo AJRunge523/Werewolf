@@ -98,9 +98,15 @@ public class MongoUserDAO implements IUserDAO {
 	}
 
 	@Override
-	public void removeUserById(String username) {
+	public boolean removeUserById(String username) {
 		MyUser u = mongoTemplate.findOne(query(where("username").is(username)), MyUser.class);
 		mongoTemplate.remove(u);
+		if(u!=null)
+		{
+			return true;
+		}
+		else
+			return false;
 	}
 
 

@@ -15,5 +15,5 @@ public interface IUserDAO {
 
 	public void createNewGame(int cycleTime);
 
-	public void removeUserById(String username);
+	public boolean removeUserById(String username);
 }
