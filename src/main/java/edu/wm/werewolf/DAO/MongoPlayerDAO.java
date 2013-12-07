@@ -85,11 +85,12 @@ public class MongoPlayerDAO implements IPlayerDAO {
 				.addCriteria(where("_id").ne(id)), Player.class);
 			List<Player> v = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.003))
 					.addCriteria(where("_id").ne(id)), Player.class);
-			List<Player> w = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.003))
+			List<Player> w = mongoTemplate.find(query(where("location").near(new Point(p.getLocation()[0], p.getLocation()[1])).maxDistance(0.006))
 					.addCriteria(where("_id").ne(id)), Player.class);
 			List<PlayerTarget> pt = new ArrayList<PlayerTarget>();
 			for(Player player: w)
-				pt.add(new PlayerTarget(player, 2));
+				if(!player.isWerewolf())
+					pt.add(new PlayerTarget(player, 2));
 			for(PlayerTarget target: pt)
 			{
 				boolean found = false;

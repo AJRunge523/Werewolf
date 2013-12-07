@@ -24,6 +24,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.userdetails.User;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Update.update;
@@ -81,6 +82,12 @@ public class MongoUserDAO implements IUserDAO {
 			j.add((int)(Math.random()*users.size()));
 		for(int n = 0; n<users.size(); n++)
 		{
+			//System.out.println(users.get(n).getAuthorities().toString());
+			if(users.get(n).getAuthorities().toString().equals("[ROLE_ADMIN]"))
+			{
+				System.out.println("FOUND AN ADMIN");
+				continue;
+			}
 			Player p = new Player(users.get(n).getId(), false, 0.0, 0.0, users.get(n).getUsername(), false, 0);
 			
 			if(j.contains(n))
