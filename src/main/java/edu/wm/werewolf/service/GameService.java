@@ -1,5 +1,6 @@
 package edu.wm.werewolf.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import edu.wm.werewolf.DAO.IPlayerDAO;
 import edu.wm.werewolf.DAO.IUserDAO;
 import edu.wm.werewolf.domain.GPSLocation;
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.KanjiList;
 import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
@@ -192,6 +194,19 @@ public class GameService {
 		for(String s: playerIDs.keySet())
 			gameDao.smitePlayer(playerIDs.get(s));
 		return new JsonResponse("success", null);
+	}
+	
+	public JsonResponse addKanjiList(KanjiList k) {
+		gameDao.addKanjiList(k);
+		return new JsonResponse("success", null);
+	}
+	
+	public JsonResponse getAllKanjiLists() {
+		List<KanjiList> kanjiListList = gameDao.getAllLists();
+		if(kanjiListList != null)
+			return new JsonResponse("success", kanjiListList);
+		else
+			return new JsonResponse("failure", "Unknown error");
 	}
 	
 

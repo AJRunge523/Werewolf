@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.wm.werewolf.domain.JsonResponse;
+import edu.wm.werewolf.domain.KanjiList;
 import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.MyUser;
 import edu.wm.werewolf.domain.Player;
@@ -201,6 +202,25 @@ public class HomeController {
 		gameService.smitePlayers(userIDs);
 		return new JsonResponse("success", null);
 	}
+	
+	@RequestMapping(value = "/addList", method = RequestMethod.POST)
+	public @ResponseBody JsonResponse addKanjiList(@RequestBody Map<String, String> listInfo)
+	{
+		logger.info("attempting to remove users");
+		KanjiList list = new KanjiList();
+		list.setListName(listInfo.get("name"));
+		list.setCardString(listInfo.get("cards"));
+		list.setCount(Integer.parseInt(listInfo.get("count")));
+		gameService.addKanjiList(list);
+		return new JsonResponse("success", null);
+	}
+	
+	@RequestMapping(value = "/getLists", method = RequestMethod.GET)
+	public @ResponseBody JsonResponse getLists()
+	{
+		return gameService.getAllKanjiLists();
+	}
+	
 	
 	
 	

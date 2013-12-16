@@ -18,6 +18,7 @@ import com.mongodb.WriteResult;
 
 import edu.wm.werewolf.config.SpringMongoConfig;
 import edu.wm.werewolf.domain.Game;
+import edu.wm.werewolf.domain.KanjiList;
 import edu.wm.werewolf.domain.Kill;
 import edu.wm.werewolf.domain.Player;
 
@@ -159,6 +160,16 @@ public class MongoGameDAO implements IGameDAO {
 		stats.add(String.valueOf(game.timeToNextNight()));
 		stats.add(String.valueOf(game.getCreatedDate()));
 		return stats;
+	}
+	
+	public void addKanjiList(KanjiList list)
+	{
+		mongoTemplate.insert(list);
+	}
+	
+	public List<KanjiList> getAllLists()
+	{
+		return mongoTemplate.findAll(KanjiList.class);
 	}
 
 }
